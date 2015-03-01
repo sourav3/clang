@@ -31,6 +31,7 @@ using namespace llvm;
 Rewriter rewriter;
 int numFunctions = 0;
 static cl::OptionCategory MyToolCategory("my-tool options");
+
 class ExampleVisitor : public RecursiveASTVisitor<ExampleVisitor> {
 private:
 	ASTContext *astContext; // used for getting additional AST info
@@ -44,6 +45,7 @@ public:
 	{
 		rewriter.setSourceMgr(astContext->getSourceManager(), astContext->getLangOpts());
 	}
+
 	virtual bool VisitFunctionDecl(FunctionDecl *func)
 	{
 		//numFunctions++;
@@ -58,6 +60,7 @@ public:
 		}
 		return true;
 	}
+
 	virtual bool VisitIfStmt(IfStmt* ifst)
 	{
 		using namespace logConfig;
@@ -164,6 +167,7 @@ public:
 			return true;
 		}
 	}
+
 	virtual bool VisitWhileStmt(WhileStmt* wstmt)
 	{
 		if(!isInMainFile(wstmt->getLocStart()))
@@ -232,6 +236,7 @@ public:
 		}
 		return true;
 	}
+
 	bool VisitForStmt(ForStmt* fstmt)
 	{
 		using namespace logConfig;
@@ -300,6 +305,7 @@ public:
 		}
 		return true;
 	}
+
 	virtual bool VisitDoStmt(DoStmt* wstmt)
 	{
 		using namespace logConfig;
@@ -356,6 +362,7 @@ public:
 		}
 		return true;
 	}
+
 	bool VisitSwitchStmt(SwitchStmt* st)
 	{
 		using namespace logConfig;
@@ -395,6 +402,7 @@ public:
 		return true;
 	}
 };
+
 class ExampleASTConsumer : public ASTConsumer {
 private:
 	ExampleVisitor *visitor; // doesn't have to be private
@@ -421,12 +429,14 @@ public:
 	}
 	*/
 };
+
 class ExampleFrontendAction : public ASTFrontendAction {
 public:
 	virtual ASTConsumer *CreateASTConsumer(CompilerInstance &CI, StringRef file) {
 		return new ExampleASTConsumer(&CI); // pass CI pointer to ASTConsumer
 	}
 };
+
 // For each source file provided to the tool, a new FrontendAction is created.
 int main(int argc, const char **argv) {
 	// parse the command-line args passed to your code
